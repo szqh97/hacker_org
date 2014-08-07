@@ -3,7 +3,6 @@
 #2014-07-31 15:09:25
 
 import Queue
-import time
 
 class Point():
     def __init__(self, x, y):
@@ -13,6 +12,21 @@ class Point():
         return cmp(self.x , oth.x ) and cmp(self.y, oth.y)
     def __hash__(self):
         return  hash(str(self.x) + "," + str(self.y))
+
+def get_direction(p1, p2):
+    if p2.x - p1.x == 1 and p2.y == p1.y:
+        print 'R'
+        return 'R'
+    if p2.y - p1.y == 1 and p2.x == p1.x:
+        print 'D'
+        return 'D'
+def print_path(path):
+    s_path = ""
+    for i in xrange(len(path)-1):
+        s_path += get_direction(path[i], path[i+1])
+    return path
+
+
 
 class Maze(object):
     def __init__(self, strmazevars):
@@ -76,29 +90,50 @@ class Maze(object):
                     self.frontier.put(next)
                     self.come_from[next] = current
     
-    def get_all_path(self):
-        end_points = []
+    def get_endpoints(self):
+        """ get available end points"""
+        self.end_points=[]
         for y in xrange(self.yboard):
             x = self.xboard - 1
-            if self.graph[y][x] == '.':
-                end_points.append(Point(x, y))
+            if self.graph[y][x] == '.' :
+                self.end_points.append(Point(x, y))
         for x in xrange(self.xboard - 1):
             y = self.yboard - 1
             if self.graph[y][x] == '.':
-                end_points.append(Point(x,y))
-        
-        print len(end_points)
+                self.end_points.append(Point(x,y))
+ 
+    def get_all_path(self):
+        self.get_come_from_list()
+        self.get_endpoints()
+       
+        print len(self.end_points)
+        for p in self.end_points:
+            print "(", str(p.x) + ", " + str(p.y) + "), "
+
         start = Point(0, 0)
-        for p in end_points:
+        for p in self.end_points:
+            x = p.x
+            y = p.y
+            if p.x == self.xboard - 1:
+                x += 1
+            if p.y == self.yboard - 1:
+                y += 1
+            path = [Point(x, y)]
+
+
             current = p
-            path = [current]
+            path.append(current)
             if self.come_from.has_key(p):
                 while current != start:
                     current = self.come_from[current]
                     path.append(current)
                 if current == start:
-                    print "path len ", len(path), path
+                    path.append(start)
+                    path.reverse()
+                    print print_path(path)
+                    #print "path len ", len(path), path
                     for p in path:
                         print "(", str(p.x) + ", " + str(p.y) + "), "
 
+    
 
