@@ -36,7 +36,6 @@ class Maze(object):
         self.come_from = {}
         self.come_from[Point(0,0)] = True
 
-
         self.graph = []
         self.maxsteps = -1
         self.minsteps = -1
