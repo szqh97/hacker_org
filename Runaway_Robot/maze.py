@@ -56,6 +56,7 @@ def hack_maze_path(info ):
         ", maze.iLevel: " + str(maze.iLevel)
     log.info('%s', info)
 
+    print info
     print maze.lmap
     
     for template_len in range(maze.iMinSteps, maze.iMaxSteps + 1):
@@ -122,5 +123,6 @@ if __name__ == '__main__':
         urlinfo, strFlashVars = getParams(next_level_url)
         if len(strFlashVars) == 0:
             break
+        print 'strFlashVars ----- ', strFlashVars
         ans = hack_maze_path(strFlashVars)
         next_level_url = urlinfo + '&path=' + ans

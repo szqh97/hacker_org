@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import t 
+# TODO 
+# 1. do not modify the original map
 def setbomb(maze, x, y, c):
     m = maze[0:y]
     st = maze[y]
@@ -9,7 +11,7 @@ def setbomb(maze, x, y, c):
     return m
 
 def findapath(maze, pathstack, x, y, boadx, boady):
-    while x < boadx and y < boady:
+    while x < boadx and y < boady and maze[0][0] == '.':
 
         if maze[y][x+1] == '.':
             x += 1;
@@ -18,55 +20,39 @@ def findapath(maze, pathstack, x, y, boadx, boady):
             y += 1;
             pathstack.append('D')
         else:
-            while maze[y+1][x] != '.':
+            print 'xxxxxxxxx', x, y
+            while maze[y+1][x] != '.' and maze[0][0] == '.':
                 # pop from the pathstack until the p is not 'D'
                 maze = setbomb(maze, x, y, 'b')
                 pathstack = pathstack[0:-1]
                 x = ''.join(pathstack).count('R')
                 y = ''.join(pathstack).count('D')
-    return (maze, pathstack, x, y)
+    return (pathstack, x, y)
 
 
 # right : R, Down : D
-def showallpath(maze, boadx, boady):
+def showallpath(m, boadx, boady):
+    maze = m
     print "boad", boadx, boady
     x, y = 0, 0
     pathstack = []
     # get the pathstack by find the first path
-    maze, pathstack, x, y = findapath(maze, pathstack, x, y, boadx, boady)
+    pathstack, x, y = findapath(maze, pathstack, x, y, boadx, boady)
     print ''.join(pathstack)
-    while len(pathstack) != 0:
+    #while len(pathstack) != 0:
+    #while x!= 0 and y!=0:
+    for x in xrange(3):
         print "xxx"
+        p = pathstack[-1]
+        maze = m
         maze = setbomb(maze, x, y, 'b')
         pathstack = pathstack[0:-1]
         x = ''.join(pathstack).count('R')
         y = ''.join(pathstack).count('D')
-        maze, pathstack, x, y = findapath(maze, pathstack, x, y, boadx, boady)
         print "x = ", x, "y = ", y
+        pathstack, x, y = findapath(maze, pathstack, x, y, boadx, boady)
         print ''.join(pathstack)
-#    while x < boadx and y < boady:
-#        print '===', x, y
-#
-#        if maze[y][x+1] == '.':
-#            x += 1;
-#            pathstack.append('R')
-#        elif maze[y+1][x] == '.':
-#            y += 1;
-#            pathstack.append('D')
-#        else:
-#            print pathstack
-#            print "showallpath", x, y
-#            while maze[y+1][x] != '.':
-#                # pop from the pathstack until the p is not 'D'
-#                maze = setbomb(maze, x, y, 'b')
-#                pathstack = pathstack[0:-1]
-#                x = ''.join(pathstack).count('R')
-#                y = ''.join(pathstack).count('D')
-#                print 'xxx', x, y
-#
-    #print pathstack
     print "\n"
-    #print maze
 
 def paintpath(maze, path):
     x, y = 0, 0
@@ -79,5 +65,5 @@ def paintpath(maze, path):
         m = setbomb(m, x, y, '*')
     return m
 
-
-showallpath(t.maze, len(t.maze[0]) - 1, len(t.maze) - 1)
+maze = t.maze
+showallpath(maze, len(maze[0]) - 1, len(maze) - 1)
