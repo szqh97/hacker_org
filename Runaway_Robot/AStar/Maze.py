@@ -3,6 +3,7 @@
 #2014-07-31 15:09:25
 
 import Queue
+import collections
 
 class Point():
     def __init__(self, x, y):
@@ -81,13 +82,28 @@ class Maze(object):
         return neighbours
 
     def get_come_from_list(self):
+        """
+          come_from is like ;
+          { A:[B, C],
+            B:[C],
+            C:[D,E]
+          }
+        """
         while not self.frontier.empty():
             print self.frontier.qsize(), len(self.come_from)
             current = self.frontier.get()
-            for next in self.get_neighbours(current):
-                if not self.come_from.has_key(next):
-                    self.frontier.put(next)
-                    self.come_from[next] = current
+            next_steps = [p for p in self.get_neighbours(current)]
+            # if next step is bambo do not go this point
+            if next_steps:
+                self.come_from[current] = next_steps
+
+            for next in next_steps:
+                self.frontier.put(next)
+        for p in self.come_from:
+            print '(', p.x, ',', p.y, ') : ['
+            for pp in self.come_from[p]:
+                print ' (', pp.x, ', ', pp.y, '),'
+            print ']'
     
     def get_endpoints(self):
         """ get available end points"""
@@ -101,6 +117,24 @@ class Maze(object):
             if self.graph[y][x] == '.':
                 self.end_points.append(Point(x,y))
  
+    def find_all_path1end(self, start, end_point, path=[]):
+        print path
+        path = path + [start]
+        if start == end_point:
+            return [path]
+        if not self.come_from.has_key(start):
+            print 'should not here'
+            return []
+        paths = []
+        for node in self.come_from[start]:
+            print node
+            if node not in path:
+                newpaths = find_all_path1end(node, end_point, path)
+                for newpath in newpaths:
+                    paths.append(newpath)
+        return paths
+
+
     def get_all_path(self):
         self.get_come_from_list()
         self.get_endpoints()
