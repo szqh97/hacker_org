@@ -13,6 +13,8 @@ class Point():
         return cmp(self.x , oth.x ) and cmp(self.y, oth.y)
     def __hash__(self):
         return  hash(str(self.x) + "," + str(self.y))
+    def __str__(self):
+        return '(' +','.join((str(self.x),str(self.y))) +')'
 
 def get_direction(p1, p2):
     if p2.x - p1.x == 1 and p2.y == p1.y:
@@ -117,8 +119,9 @@ class Maze(object):
             if self.graph[y][x] == '.':
                 self.end_points.append(Point(x,y))
  
+    def Print(self, p):
+        print str(p)
     def find_all_path1end(self, start, end_point, path=[]):
-        print path
         path = path + [start]
         if start == end_point:
             return [path]
@@ -127,11 +130,18 @@ class Maze(object):
             return []
         paths = []
         for node in self.come_from[start]:
-            print node
+            self.Print(node)
             if node not in path:
-                newpaths = find_all_path1end(node, end_point, path)
+                newpaths = self.find_all_path1end(node, end_point, path)
                 for newpath in newpaths:
                     paths.append(newpath)
+            else:
+                print 'befor'
+                self.Print(node)
+                print 'zzzzzzzzzzzz'
+                for p in path:
+                    self.Print(p)
+                print 'xxxxxxxxxx'
         return paths
 
 
