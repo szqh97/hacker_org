@@ -39,8 +39,9 @@ def print_path(path):
 class Maze(object):
 
     def __init__(self, strmazevars):
-        self.frontier = Queue.Queue()
-        self.frontier.put(Point(0, 0))
+        #self.frontier = Queue.Queue()
+        self.frontier = collections.deque()
+        self.frontier.append(Point(0, 0))
         self.come_from = {}
         self.come_from[Point(0, 0)] = True
         self.graph = []
@@ -94,13 +95,15 @@ class Maze(object):
             C:[D,E]
           }
         """
-        while not self.frontier.empty():
-            current = self.frontier.get()
+        # self.frontier may dupliceated
+        while self.frontier:
+            current = self.frontier.popleft()
             next_steps = [ p for p in self.get_neighbours(current) ]
             if next_steps:
                 self.come_from[current] = next_steps
             for next in next_steps:
-                self.frontier.put(next)
+                if self.frontier.count(next) == 0:
+                    self.frontier.append(next)
 
         for p in self.come_from:
             print '(', p.x, ',', p.y, ') : ['
