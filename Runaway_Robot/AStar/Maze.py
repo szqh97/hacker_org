@@ -137,12 +137,8 @@ class Maze(object):
         self.get_come_from_list()
         self.get_endpoints()
        
-        print len(self.end_points)
-        for p in self.end_points:
-            print "(", str(p.x) + ", " + str(p.y) + "), "
-
         start = Point(0, 0)
-        for p in self.end_points:
+for p in self.end_points:
             x = p.x
             y = p.y
             if p.x == self.xboard - 1:
