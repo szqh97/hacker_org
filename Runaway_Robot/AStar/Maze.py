@@ -143,24 +143,31 @@ class Maze(object):
         start = Point(0, 0)
         all_paths = []
         for end in self.end_points:
-            print str(end)
             paths = self.find_all_path1end(start, end)
-            print len(paths)
             if end.x == self.xboard - 1:
-                all_paths = all_paths + [ path + [Point(end.x + 1, end.y)] for path in paths ]
+                yield [ path + [Point(end.x + 1, end.y)] for path in paths ]
             if end.y == self.yboard - 1:
-                all_paths = all_paths + [ path + [Point(end.x, end.y + 1)] for path in paths ]
+                yield [ path + [Point(end.x, end.y + 1)] for path in paths ]
 
-        str_all_paths = [ print_path(path) for path in all_paths ]
-        return str_all_paths
+    def get_valid_step(self):
+        steps = ""
+        for paths in self.get_all_path():
+            for path in paths:
+                if path :
+                    steps = self.check_path_valid(print_path(path))
+                if steps :
+                    return steps
+        if not steps:
+            return ""
 
-    def get_fist_available_path(self):
+    def check_path_valid(self, path):
         step = ''
-        for path in self.get_all_path():
-            for steplen in xrange(self.minsteps, self.maxsteps + 1):
-                step = path[0:steplen]
-                cnt = len(path) / steplen + 1
-                expend_path = step * cnt
-                if expend_path.startswith(path):
-                    return step
+        for steplen in xrange(self.minsteps, self.maxsteps + 1):
+            step = path[0:steplen]
+            cnt = len(path) / steplen + 1
+            expend_path = step * cnt
+            if expend_path.startswith(path):
+                return step
+            else: 
+                return ''
 
