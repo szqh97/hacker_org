@@ -10,9 +10,13 @@ class Point():
         self.x = x
         self.y = y
     def __cmp__(self, oth):
-        return cmp(self.x , oth.x ) and cmp(self.y, oth.y)
+        return comp((self.x, self.y), (oth.x, oth.y))
+
     def __hash__(self):
         return  hash(str(self.x) + "," + str(self.y))
+
+    def __str__(self):
+        return '(%d,%d)' % (self.x, self.y)
 
 def get_direction(p1, p2):
     if p2.x - p1.x == 1 and p2.y == p1.y:
